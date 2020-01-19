@@ -1,5 +1,3 @@
-%% Y esto tambien
-
 % Calderon precondiioner with refined mesh
 
 disp(' ')
