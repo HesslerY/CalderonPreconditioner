@@ -18,6 +18,7 @@ k = 2*pi/lambda;
 eta = 120*pi;
 field = 1; % EFIE->1, MFIE->2, CFIE->3
 
+%
 % Rint_s = 0.2;       % MoM Integration radius (meters). Rint=0 is enough if basis functions are very small.
 % Rint_f = Rint_s;
 % Ranal_s = 0;
