@@ -51,12 +51,17 @@ T2A = P.'*Ze2*Q*Ze2*R;
 fprintf('cond T2 Andriulli = %.2e\n\n', cond(T2A));
 
 %% Andriulli method via orthogonal projections
+% Section devoted to a first approach to the Andriulli method via operators
+% This section is generalized in the next one by consideration of more
+% different methods and a definition of the operators used throughout the
+% article
 
 Gb = D_mat(obj2); % Gram matrix for refined RWG functions
 nxGb = nxD_mat(obj2); % Gram matrix for refined nxRWG functions with refined RWG functions
 Gbc = P.'*Gb*P; % Gram matrix for BC functions
 G1 = D_mat(obj); % Gram matrix for original RWG (and nxRWG functions)
 
+% Matrices associated to each approach
 Tand = P.'*Ze2*P*inv(inv(G1)*Gm)*inv(G1)*R.'*Ze2*R; % Developed Andriulli Matrix
 Tand2 = P.'*Ze2*P*inv(Gbc)*Gm*inv(G1)*R.'*Ze2*R; % Developed Pablo Matrix
 Tand3 = P.'*Ze2*P*inv(Gbc)*Gm'*inv(G1)*R.'*Ze2*R; % Refined Pablo Matrix
@@ -68,8 +73,11 @@ fprintf('cond Tand3 = %.2e\n\n', cond(Tand3));
 comp_mat(inv(inv(G1)*Gm), inv(Gbc)*Gm', 'Comparison between projection matrices');
 
 %% Definition of operators
+% Section devoted to the definition of the operatiors used. The notation TP
+% stands for operator T + projection, and PI denotes projection + inclusion
+% Every operator has the domain and range indicated on its definition
 
-G3 = nxD_mat(obj);
+G3 = nxD_mat(obj); % Gram Matrix for 
 
 TPrwg = inv(G1)*R.'*Ze2*R; % T operator + projection on nxRWG
 TPbc = inv(Gbc)*P.'*Ze2*P; % T operator + projection on nxBC
@@ -86,11 +94,13 @@ fprintf('Condition number for projection from nxRWG to RWGb: %.5e\n', cond(PIrwg
 fprintf('Condition number for (inverse of) projection from BC to nxRWG: %.5e\n\n', cond(inv(PInrwg)));
 
 %% Methods using operators and condition numbers
+% Once defined the operators, the chain for the MoM EFIE for each method
+% is defined here. Condition numbers are written as well
 
-Tjmr1 = TPrwg*PIrwg*TPrwg;
-Tjmr2 = TPbc*PIbc*TPrwg;
-Tjmr3 = inv(G1)*R.'*Ze2*PIrwgb*TPrwg;
-Tandr = TPbc*inv(PInrwg)*TPrwg;
+Tjmr1 = TPrwg*PIrwg*TPrwg; % Method 1 in the article
+Tjmr2 = TPbc*PIbc*TPrwg; % Method 4 in the article
+Tjmr3 = inv(G1)*R.'*Ze2*PIrwgb*TPrwg; % Method 3 in the article
+Tandr = TPbc*inv(PInrwg)*TPrwg; % Method 2 in the article
 
 fprintf('Condition number for JMR projection method 1: %.5e\n', cond(Tjmr1));
 fprintf('Condition number for JMR projection method 2: %.5e\n', cond(Tjmr2));
@@ -187,6 +197,11 @@ xlabel('Iteration')
 % errnxD2 = comp_mat(R.'*G, G2, 'error in G2 == R.''*G       ');
 
 %% Norm of the error vectors in JM and Andriulli methods: V1
+% Method exposed in the article. The Gram matrix for vector space Y is
+% defined and so are the resulting vectors using each approximation. Notice
+% that the definition of the difference of vectors uses thar the resulting
+% vector of each approximation lies in RWGb and the result of exact
+% computation lies in nxRWGb, adn both spaces are disjoint.
 
 fprintf('------------------------\nFIRST VERSION: EXTENDED BOTH BASES \n')
 
@@ -201,18 +216,21 @@ Vjm2 = R*PIrwg*TPrwg*Je;
 Vjm3 = PIrwgb*TPrwg*Je;
 
 % Vectors on direct sum superspace and error norm calculation
-
 Eand = [- Vand; Vo];
 Ejm1 = [- Vjm1; Vo];
 Ejm2 = [- Vjm2; Vo];
 Ejm3 = [- Vjm3; Vo];
 
-fprintf('Error with Andriulli approximation: %.5e,\n', Eand'*Gram*Eand);
-fprintf('Error with JMR approximation 1 on RWG: %.5e,\n', Ejm1'*Gram*Ejm1);
-fprintf('Error with JMR approximation 2 on RWG: %.5e,\n', Ejm2'*Gram*Ejm2);
-fprintf('Error with JMR approximation 3 on RWG: %.5e.\n\n', Ejm3'*Gram*Ejm3);
+fprintf('Error with Andriulli approximation: %.5e,\n', sqrt(Eand'*Gram*Eand));
+fprintf('Error with JMR approximation 1 on RWG: %.5e,\n', sqrt(Ejm1'*Gram*Ejm1));
+fprintf('Error with JMR approximation 2 on RWG: %.5e,\n', sqrt(Ejm2'*Gram*Ejm2));
+fprintf('Error with JMR approximation 3 on RWG: %.5e.\n\n', sqrt(Ejm3'*Gram*Ejm3));
 
 %% Norm of the error vectors in JM and Andriulli methods: V2
+% This method has not been explained in the article. Noticing that the
+% resulting vectors belong only in vector spaces in RWGb and the the image
+% of Je belong in nxRWG, only an extension of the domain base is needed.
+% Numerical calculation shows that results using both methods agree
 
 fprintf('------------------------\nFIRST VERSION: EXTENDED ONLY DOMAIN BASE \n')
 
@@ -227,7 +245,6 @@ Vjm2 = R*PIrwg*TPrwg*Je;
 Vjm3 = PIrwgb*TPrwg*Je;
 
 % Vectors on direct sum superspace and error norm calculation
-
 Eand = [- Vand; Vo];
 Ejm1 = [- Vjm1; Vo];
 Ejm2 = [- Vjm2; Vo];
