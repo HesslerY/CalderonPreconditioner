@@ -85,12 +85,14 @@ PIbc = inv(Gbc)*Gm'; % Projection from nxRWG on BC
 PInrwg = inv(G1)*Gm; % Projection from BC to nxRWG
 PIrwg = inv(G1)*G3; % Projection from nxRWG to RWG
 PIrwgb = inv(Gb)*G2'; % Projection from nxRWG to RWGb
+rho5 = G2\G1; % Rho matrix for method 5 proposed
 
 fprintf('-----------------------\nCONDITION NUMBERS FOR DIFFERENT PROJECTION OPERATORS\n')
 
 fprintf('Condition number for projection from nxRWG to RWG: %.5e\n', cond(PIrwg));
 fprintf('Condition number for projection from nxRWG to BC: %.5e\n', cond(PIbc));
 fprintf('Condition number for projection from nxRWG to RWGb: %.5e\n', cond(PIrwgb));
+
 fprintf('Condition number for (inverse of) projection from BC to nxRWG: %.5e\n\n', cond(inv(PInrwg)));
 
 %% Methods using operators and condition numbers
@@ -101,11 +103,20 @@ Tjmr1 = TPrwg*PIrwg*TPrwg; % Method 1 in the article
 Tjmr2 = TPbc*PIbc*TPrwg; % Method 4 in the article
 Tjmr3 = inv(G1)*R.'*Ze2*PIrwgb*TPrwg; % Method 3 in the article
 Tandr = TPbc*inv(PInrwg)*TPrwg; % Method 2 in the article
+Tjmr5 = rho5'*Ze2*rho5*TPrwg; % Operator for method 5 proposed
 
 fprintf('Condition number for JMR projection method 1: %.5e\n', cond(Tjmr1));
 fprintf('Condition number for JMR projection method 2: %.5e\n', cond(Tjmr2));
 fprintf('Condition number for JMR projection method 3: %.5e\n', cond(Tjmr3));
+fprintf('Condition number for JMR projection method 5: %.5e\n', cond(Tjmr5));
 fprintf('Condition number for andriulli projection method: %.5e\n\n', cond(Tandr));
+
+%% Singular values of different operators
+fprintf('Maximum and minimum singular value for JMR 1:  %.5e,  %.5e\n', max(svd(Tjmr1)), min(svd(Tjmr1)));
+fprintf('Maximum and minimum singular value for JMR 2:  %.5e,  %.5e\n', max(svd(Tjmr2)), min(svd(Tjmr2)));
+fprintf('Maximum and minimum singular value for JMR 3:  %.5e,  %.5e\n', max(svd(Tjmr3)), min(svd(Tjmr3)));
+fprintf('Maximum and minimum singular value for JMR 5:  %.5e,  %.5e\n', max(svd(Tjmr5)), min(svd(Tjmr5)));
+fprintf('Maximum and minimum singular value for Andriulli:  %.5e,  %.5e\n\n', max(svd(Tandr)), min(svd(Tandr)))
 
 %% Checking pseudoinverse conditions
 
@@ -214,17 +225,20 @@ Vand = P*inv(PInrwg)*TPrwg*Je;
 Vjm1 = P*PIbc*TPrwg*Je;
 Vjm2 = R*PIrwg*TPrwg*Je;
 Vjm3 = PIrwgb*TPrwg*Je;
+Vjm5 = rho5*TPrwg*Je;
 
 % Vectors on direct sum superspace and error norm calculation
 Eand = [- Vand; Vo];
 Ejm1 = [- Vjm1; Vo];
 Ejm2 = [- Vjm2; Vo];
 Ejm3 = [- Vjm3; Vo];
+Ejm5 = [- Vjm5; Vo];
 
 fprintf('Error with Andriulli approximation: %.5e,\n', sqrt(Eand'*Gram*Eand));
 fprintf('Error with JMR approximation 1 on RWG: %.5e,\n', sqrt(Ejm1'*Gram*Ejm1));
 fprintf('Error with JMR approximation 2 on RWG: %.5e,\n', sqrt(Ejm2'*Gram*Ejm2));
-fprintf('Error with JMR approximation 3 on RWG: %.5e.\n\n', sqrt(Ejm3'*Gram*Ejm3));
+fprintf('Error with JMR approximation 3 on RWG: %.5e.\n', sqrt(Ejm3'*Gram*Ejm3));
+fprintf('Error with JMR approximation 5 on RWG: %.5e.\n\n', sqrt(Ejm5'*Gram*Ejm5));
 
 %% Norm of the error vectors in JM and Andriulli methods: V2
 % This method has not been explained in the article. Noticing that the
