@@ -234,11 +234,11 @@ Ejm2 = [- Vjm2; Vo];
 Ejm3 = [- Vjm3; Vo];
 Ejm5 = [- Vjm5; Vo];
 
-fprintf('Error with Andriulli approximation: %.5e,\n', sqrt(Eand'*Gram*Eand));
-fprintf('Error with JMR approximation 1 on RWG: %.5e,\n', sqrt(Ejm1'*Gram*Ejm1));
-fprintf('Error with JMR approximation 2 on RWG: %.5e,\n', sqrt(Ejm2'*Gram*Ejm2));
-fprintf('Error with JMR approximation 3 on RWG: %.5e.\n', sqrt(Ejm3'*Gram*Ejm3));
-fprintf('Error with JMR approximation 5 on RWG: %.5e.\n\n', sqrt(Ejm5'*Gram*Ejm5));
+fprintf('Error with Andriulli approximation: %.5e,\n', sqrt(Eand.'*Gram*Eand));
+fprintf('Error with JMR approximation 1 on RWG: %.5e,\n', sqrt(Ejm1.'*Gram*Ejm1));
+fprintf('Error with JMR approximation 2 on RWG: %.5e,\n', sqrt(Ejm2.'*Gram*Ejm2));
+fprintf('Error with JMR approximation 3 on RWG: %.5e.\n', sqrt(Ejm3.'*Gram*Ejm3));
+fprintf('Error with JMR approximation 5 on RWG: %.5e.\n\n', sqrt(Ejm5.'*Gram*Ejm5));
 
 %% Norm of the error vectors in JM and Andriulli methods: V2
 % This method has not been explained in the article. Noticing that the
@@ -264,7 +264,7 @@ Ejm1 = [- Vjm1; Vo];
 Ejm2 = [- Vjm2; Vo];
 Ejm3 = [- Vjm3; Vo];
 
-fprintf('Error with Andriulli approximation: %.5e,\n', Eand'*Gram*Eand);
-fprintf('Error with JMR approximation 1 on RWG: %.5e,\n', Ejm1'*Gram*Ejm1);
-fprintf('Error with JMR approximation 2 on RWG: %.5e,\n', Ejm2'*Gram*Ejm2);
-fprintf('Error with JMR approximation 3 on RWG: %.5e.\n', Ejm3'*Gram*Ejm3);
+fprintf('Error with Andriulli approximation: %.5e,\n', Eand.'*Gram*Eand);
+fprintf('Error with JMR approximation 1 on RWG: %.5e,\n', Ejm1.'*Gram*Ejm1);
+fprintf('Error with JMR approximation 2 on RWG: %.5e,\n', Ejm2.'*Gram*Ejm2);
+fprintf('Error with JMR approximation 3 on RWG: %.5e.\n', Ejm3.'*Gram*Ejm3);
